@@ -7,38 +7,34 @@ model Q_t.mod
 data game_data.dat
 
 # Define problems
-problem P_t: x, z, value_of_game, no_regret_on_unexploitable, min_max_on_exploitable, sum_to_one;
-problem Q_t: x, p, sum_probabilities, no_regret_on_unexploitable, min_max_on_exploitable_upd;
+problem P_t: x_P, z, value_of_game, no_regret_on_unexploitable, min_max_on_exploitable, sum_to_one;
+problem Q_t: x_Q, p, sum_probabilities, no_regret_on_unexploitable, min_max_on_exploitable_upd;
 
-let phi_2_t := phi_2;
-let C2_t := {};
+let phi_2_t := phi_2;                               # initial exploitable actions = all
+let C2_t := {};                                     # initial unexpl. = empty set
 
-param t default 0;
-param x_sol{i in phi_1} default 0;
+param t default 0;                                  # iteration count
 
+# Solving for D-opt strategy of P1
 repeat {
-    let C2_t := phi_2 diff phi_2_t;
+    let C2_t := phi_2 diff phi_2_t;                 # update unexploitable
 
-    printf "Iteration t=%d\n", t;
+    printf "============Iteration t=%d============\n", t;
     printf "Solving P_%d...\n", t;
 
     # Solve P_t
     solve P_t;
-    display x, z;
+    display x_P, z;
     
     let value_upd := z.val;         # update value of the game
-    
-    for {i in phi_1} {
-        let x_sol[i] := x[i].val;   # copy x into x_sol
-    }
 
     # Solve Q_t
     printf "Solving Q_%d...\n", t;
     display phi_2_t;
     solve Q_t;
-    display x, p;
+    display x_Q, p;
 
-    # Delete non-exploitable moves of P2
+    # Delete non-exploitable moves of P2 (update exploitable set)
     for {k in phi_2_t} {
         if p[k] < 1 then {
             let phi_2_t := phi_2_t diff {k}; 
@@ -54,4 +50,4 @@ repeat {
 
 printf "======================================\n";
 printf "D-optimal strategy for player found:\n";
-display x_sol;
+display x_P;
