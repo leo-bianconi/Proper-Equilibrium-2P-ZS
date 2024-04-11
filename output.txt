@@ -1,0 +1,87 @@
+P1
+============Iteration t=0============
+Solving P_0...
+Gurobi 9.5.1: optimal solution; objective 0
+x_P [*] :=
+a1  1
+a2  0
+;
+
+z = 0
+
+Solving Q_0...
+set phi_2_t := a3 a4 a5;
+
+Gurobi 9.5.1: optimal solution; objective 2
+:  x_Q   p    :=
+a1   1   .
+a2   1   .
+a3   .   1
+a4   .   1
+a5   .   0
+;
+
+============Iteration t=1============
+Solving P_1...
+Gurobi 9.5.1: optimal solution; objective 0.5
+2 simplex iterations
+x_P [*] :=
+a1  0.5
+a2  0.5
+;
+
+z = 0.5
+
+Solving Q_1...
+set phi_2_t := a3 a4;
+
+Gurobi 9.5.1: optimal solution; objective 0
+1 simplex iterations
+:  x_Q   p    :=
+a1   0   .
+a2   0   .
+a3   .   0
+a4   .   0
+;
+
+=========================================================================
+P2
+============Iteration t=0============
+Solving P_0...
+Gurobi 9.5.1: optimal solution; objective 0
+x_P_b [*] :=
+a3  0
+a4  0
+a5  1
+;
+
+z_b = 0
+
+Solving Q_0...
+set phi_1_t := a1 a2;
+
+Solution determined by presolve;
+objective sum_probabilities_b = 0.
+:  x_Q_b p_b    :=
+a1    .    0
+a2    .    0
+a3    0    .
+a4    0    .
+a5    0    .
+;
+
+=========================================================================
+SOLUTION:
+D-OPT P1:
+x_P [*] :=
+a1  0.5
+a2  0.5
+;
+
+D-OPT P2:
+x_P_b [*] :=
+a3  0
+a4  0
+a5  1
+;
+

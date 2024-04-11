@@ -10,6 +10,10 @@ data game_data.dat
 problem P_t: x_P, z, value_of_game, no_regret_on_unexploitable, min_max_on_exploitable, sum_to_one;
 problem Q_t: x_Q, p, sum_probabilities, no_regret_on_unexploitable, min_max_on_exploitable_upd;
 
+problem P_t_b: x_P_b, z_b, value_of_game_b, no_regret_on_unexploitable_b, min_max_on_exploitable_b, sum_to_one_b;
+problem Q_t_b: x_Q_b, p_b, sum_probabilities_b, no_regret_on_unexploitable_b, min_max_on_exploitable_upd_b;
+
+printf "P1\n";
 let phi_2_t := phi_2;                               # initial exploitable actions = all
 let C2_t := {};                                     # initial unexpl. = empty set
 
@@ -25,8 +29,8 @@ repeat {
     # Solve P_t
     solve P_t;
     display x_P, z;
-    
-    let value_upd := z.val;         # update value of the game
+
+    let value_upd := z.val;         # update value of the game to be used in Q_t
 
     # Solve Q_t
     printf "Solving Q_%d...\n", t;
@@ -41,6 +45,7 @@ repeat {
         }
     }
     let t := t + 1;
+    let value := z.val;             # update value of the game to be used in P_t+1
 
     # Stopping criteria
     if forall {k in phi_2_t} p[k] < 1 then {
@@ -48,6 +53,55 @@ repeat {
     }
 }
 
-printf "======================================\n";
-printf "D-optimal strategy for player found:\n";
+printf "=========================================================================\n";
+printf "P2\n";
+
+# Solving for D-opt strategy of P2
+let phi_1_t := phi_1;                               # initial exploitable actions = all
+let C1_t := {};                                     # initial unexpl. = empty set
+let t := 0;                                         # iteration count
+
+#display phi_1, phi_1_t, C1_t, phi_2, phi_2_t, C2_t;
+
+
+repeat {
+    let C1_t := phi_1 diff phi_1_t;                 # update unexploitable
+
+    printf "============Iteration t=%d============\n", t;
+    printf "Solving P_%d...\n", t;
+
+    # Solve P_t
+    solve P_t_b;
+    display x_P_b, z_b;
+    
+    let value_upd_b := z_b.val;         # update value of the game
+
+    # Solve Q_t
+    printf "Solving Q_%d...\n", t;
+    display phi_1_t;
+    solve Q_t_b;
+    display x_Q_b, p_b;
+
+    # Delete non-exploitable moves of P2 (update exploitable set)
+    for {k in phi_1_t} {
+        if p_b[k] < 1 then {
+            let phi_1_t := phi_1_t diff {k}; 
+        }
+    }
+    let t := t + 1;
+    let value_b := z_b.val;
+
+    #display phi_1, phi_1_t, C1_t, phi_2, phi_2_t, C2_t;
+
+    # Stopping criteria
+    if forall {k in phi_1_t} p_b[k] < 1 then {
+        break;
+    }
+}
+
+printf "=========================================================================\n";
+printf "SOLUTION:\n";
+printf "D-OPT P1:\n";
 display x_P;
+printf "D-OPT P2:\n";
+display x_P_b;

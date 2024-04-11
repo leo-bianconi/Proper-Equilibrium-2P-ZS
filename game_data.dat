@@ -1,21 +1,8 @@
 # Parsimonious penny matching game
-# for finding D-opt strategy for ALICE:
 set phi_1 := a1 a2;
 set phi_2 := a3 a4 a5;
 
 param A : a3 a4 a5 :=
     a1    1  0  0
     a2    0  1  0
-;
-
-
-#for finding D-opt strategy for BOB:
-#set phi_1 := a3 a4 a5;
-#set phi_2 := a1 a2;
-#
-#param A : a1 a2 :=
-#    a3    -1  0
-#    a4    0  -1
-#    a5    0   0 
-#;
 ;
